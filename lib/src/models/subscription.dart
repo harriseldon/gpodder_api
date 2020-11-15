@@ -34,6 +34,9 @@ class Subscription {
   final String website;
   @JsonKey(name: 'mygpoLink')
   final String mygpoLink;
+  @JsonKey(name: 'released')
+  final DateTime released;
+  final String status; //(new|play|download|delete)
 
   Subscription(
       {this.url,
@@ -44,7 +47,9 @@ class Subscription {
       this.logoUrl,
       this.scaledLogoUrl,
       this.website,
-      this.mygpoLink});
+      this.mygpoLink,
+      this.released,
+      this.status});
 
   factory Subscription.fromJson(Map<String, dynamic> json) =>
       _$SubscriptionFromJson(json);

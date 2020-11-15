@@ -17,6 +17,8 @@ Subscription _$SubscriptionFromJson(Map<String, dynamic> json) {
     scaledLogoUrl: json['scaled_logo_url'] as String,
     website: json['website'] as String,
     mygpoLink: json['mygpoLink'] as String,
+    released: DateTime.parse(json['released'] as String),
+    status: json['status'] as String,
   );
 }
 
@@ -31,4 +33,6 @@ Map<String, dynamic> _$SubscriptionToJson(Subscription instance) =>
       'scaled_logo_url': instance.scaledLogoUrl,
       'website': instance.website,
       'mygpoLink': instance.mygpoLink,
+      'released': instance.released.toIso8601String(),
+      'status': instance.status,
     };
