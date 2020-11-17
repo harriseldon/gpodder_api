@@ -12,9 +12,13 @@ class HttpHelpers {
   }
 
   static String encodeParameters(Map<String, dynamic> parameters) {
-    return parameters.keys
+    return _removeNulls(parameters)
+        .keys
         .map((key) =>
             "${Uri.encodeComponent(key)}=${Uri.encodeComponent(parameters[key])}")
         .join("&");
   }
+
+  static Map<String, dynamic> _removeNulls(Map<String, dynamic> input) =>
+      input..remove((key, value) => value == null);
 }

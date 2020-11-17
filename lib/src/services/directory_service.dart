@@ -89,10 +89,10 @@ class DirectoryService {
     }
   }
 
-    Future<List<Subscription>> findPodcast(String searchString) async {
-    final response = await http.get(
-        this.config.api.baseUrl + "search.json" + ); HttpHelpers.encodeParameters(
-            {"q": searchString});
+  Future<List<Subscription>> findPodcast(String searchString) async {
+    final response = await http.get(this.config.api.baseUrl +
+        "search.json" +
+        HttpHelpers.encodeParameters({"q": searchString}));
 
     if (response.statusCode == 200) {
       final parsed = jsonDecode(response.body).cast<Map<String, dynamic>>();
