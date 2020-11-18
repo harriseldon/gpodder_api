@@ -10,7 +10,7 @@ import 'package:gpodder_api/src/util/http_helpers.dart';
 import 'package:http/http.dart' as http;
 
 class EpisodeActionsService {
-  final String _episodeApiPath = "/subsrictions/";
+  final String _episodeApiPath = "api/2/episodes/";
   final GpodderUser user;
   final ClientConfig config;
 

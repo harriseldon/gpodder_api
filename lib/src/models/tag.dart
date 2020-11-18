@@ -8,7 +8,7 @@ part 'tag.g.dart';
 class Tag {
   final String title;
   final String tag;
-  final String usage;
+  final int usage;
 
   Tag({this.title, this.tag, this.usage});
 

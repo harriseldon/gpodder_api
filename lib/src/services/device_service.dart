@@ -7,8 +7,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class DeviceService {
-  final String _deviceApiPath = "/api/2/devices/";
-  final String _updateApiPath = "/api/2/updates/";
+  final String _deviceApiPath = "api/2/devices/";
+  final String _updateApiPath = "api/2/updates/";
 
   final ClientConfig config;
   final GpodderUser user;

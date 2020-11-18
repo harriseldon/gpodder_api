@@ -7,11 +7,11 @@ import 'package:http/http.dart' as http;
 import 'package:gpodder_api/src/util/http_helpers.dart';
 
 class DirectoryService {
-  final String _tagsApiPath = "/api/2/tags/";
-  final String _singleTagApiPath = "/api/2/tag/";
-  final String _topListApiPath = "/toplist/";
-  final String _podcastApiPath = "/api/2/data/podcast.json";
-  final String _episodeApiPath = "/api/2/data/episode.json";
+  final String _tagsApiPath = "api/2/tags/";
+  final String _singleTagApiPath = "api/2/tag/";
+  final String _topListApiPath = "toplist/";
+  final String _podcastApiPath = "api/2/data/podcast.json";
+  final String _episodeApiPath = "api/2/data/episode.json";
 
   final ClientConfig config;
 
@@ -25,7 +25,8 @@ class DirectoryService {
       final parsed = jsonDecode(response.body).cast<Map<String, dynamic>>();
       return parsed.map<Tag>((json) => Tag.fromJson(json)).toList();
     } else {
-      throw Exception("Error Retrieving Tags");
+      throw Exception(
+          "Error Retrieving Tags from ${this.config.api.baseUrl + _tagsApiPath + count.toString() + '.json'}: ${response.reasonPhrase}");
     }
   }
 
@@ -91,7 +92,7 @@ class DirectoryService {
 
   Future<List<Subscription>> findPodcast(String searchString) async {
     final response = await http.get(this.config.api.baseUrl +
-        "search.json" +
+        "search.json?" +
         HttpHelpers.encodeParameters({"q": searchString}));
 
     if (response.statusCode == 200) {
@@ -100,7 +101,10 @@ class DirectoryService {
           .map<Subscription>((json) => Subscription.fromJson(json))
           .toList();
     } else {
-      throw Exception("Error Retrieving Top Podcasts");
+      throw Exception(
+          "Error finding a postcast for ${this.config.api.baseUrl + 'search.json?' + HttpHelpers.encodeParameters({
+                'q': searchString
+              })} Error ${response.reasonPhrase}");
     }
   }
 }

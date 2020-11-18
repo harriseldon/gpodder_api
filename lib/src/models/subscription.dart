@@ -19,7 +19,7 @@ part 'subscription.g.dart';
     }
   */
 
-@JsonSerializable(nullable: false)
+@JsonSerializable(nullable: true)
 class Subscription {
   final String url;
   final String title;
@@ -32,7 +32,7 @@ class Subscription {
   @JsonKey(name: 'scaled_logo_url')
   final String scaledLogoUrl;
   final String website;
-  @JsonKey(name: 'mygpoLink')
+  @JsonKey(name: 'mygpo_link')
   final String mygpoLink;
   @JsonKey(name: 'released')
   final DateTime released;

@@ -3,21 +3,25 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ClientConfigService {
-  final String _configurationUrl = "http://gpodder.net/clientconfig.json";
+  final String _configurationUrl = "https://gpodder.net/clientconfig.json";
 
   ClientConfig _config;
 
   ClientConfig get config => _config;
+  Future configIsFetched;
 
   ClientConfigService() {
-    _fetchConfig();
+    this.configIsFetched = _fetchConfig();
   }
 
-  Future<void> _fetchConfig() async {
+  Future _fetchConfig() async {
     final response = await http.get(_configurationUrl);
 
     if (response.statusCode == 200) {
-      _config = ClientConfig.fromJson(jsonDecode(response.body));
+      this._config = ClientConfig.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception(
+          "error retrieving client config from ${response.reasonPhrase}");
     }
   }
 }

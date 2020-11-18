@@ -10,7 +10,7 @@ import 'package:gpodder_api/src/util/http_helpers.dart';
 import 'package:http/http.dart' as http;
 
 class SubscriptionService {
-  final String _subscriptionsApiPath = "/subsrictions/";
+  final String _subscriptionsApiPath = "subscriptions/";
   final GpodderUser user;
   final ClientConfig config;
 
@@ -30,7 +30,7 @@ class SubscriptionService {
       return compute(_parseSubscriptions, response.body);
     } else {
       throw Exception(
-          "Unable to retrieve subscriptions for device ${device.caption}");
+          "Unable to retrieve subscriptions for device ${device.caption} url: ${this.config.api.baseUrl + _subscriptionsApiPath + this.user.userId + '/' + device.id + '.json'} error: ${response.reasonPhrase}");
     }
   }
 
