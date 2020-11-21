@@ -16,10 +16,13 @@ class SubscriptionService {
 
   SubscriptionService({this.user, this.config});
 
-  Future<List<Subscription>> getDeviceSubscriptions(Device device) async {
+  /*
+  // Given a device, return a list urls for that device
+  */
+  Future<List<String>> getDeviceSubscriptions(Device device) async {
     final response = await http.get(
         this.config.api.baseUrl +
-            _subscriptionsApiPath +
+            (_subscriptionsApiPath ?? "") +
             this.user.userId +
             "/" +
             device.id +
@@ -27,7 +30,10 @@ class SubscriptionService {
         headers: HttpHelpers.authHeader(this.user));
 
     if (response.statusCode == 200) {
-      return compute(_parseSubscriptions, response.body);
+      final List<String> results = (jsonDecode(response.body) as List)
+          .map<String>((entry) => entry.toString())
+          .toList();
+      return results;
     } else {
       throw Exception(
           "Unable to retrieve subscriptions for device ${device.caption} url: ${this.config.api.baseUrl + _subscriptionsApiPath + this.user.userId + '/' + device.id + '.json'} error: ${response.reasonPhrase}");
@@ -113,7 +119,7 @@ class SubscriptionService {
     }
   }
 
-  Future<DeviceUpdates> getSubscriptionChanges(
+  Future<List<String>> getSubscriptionChanges(
       Device device, int sinceTimestamp) async {
     final response = await http.get(
         this.config.api.baseUrl +
@@ -122,25 +128,30 @@ class SubscriptionService {
             "/" +
             device.id +
             ".json?" +
-            HttpHelpers.encodeParameters({"since": sinceTimestamp}),
+            HttpHelpers.encodeParameters({"since": sinceTimestamp.toString()}),
         headers: HttpHelpers.authHeader(this.user));
 
     if (response.statusCode == 200) {
-      return compute(_parseDeviceUpdates, response.body);
+      final List<String> results = (jsonDecode(response.body) as List)
+          .map<String>((entry) => entry.toString())
+          .toList();
+      return results;
     } else {
       throw Exception("Unable to get updates for device ${device.caption}");
     }
   }
+}
 
-  List<Subscription> _parseSubscriptions(String responseBody) {
-    final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
-    return parsed
-        .map<Subscription>((json) => Subscription.fromJson(json))
-        .toList();
-  }
+List<Subscription> _parseSubscriptions(String responseBody) {
+  //print(responseBody);
+  final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
+  return parsed
+      .map<Subscription>((json) => Subscription.fromJson(json))
+      .toList();
+}
 
-  DeviceUpdates _parseDeviceUpdates(String responseBody) {
-    final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
-    return DeviceUpdates.fromJson(parsed);
-  }
+DeviceUpdates _parseDeviceUpdates(String responseBody) {
+  final parsed = jsonDecode(responseBody); //.cast<Map<String, dynamic>>();
+  print(parsed);
+  return DeviceUpdates.fromJson(parsed);
 }

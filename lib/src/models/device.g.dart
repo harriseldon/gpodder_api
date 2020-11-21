@@ -16,9 +16,18 @@ Device _$DeviceFromJson(Map<String, dynamic> json) {
   );
 }
 
-Map<String, dynamic> _$DeviceToJson(Device instance) => <String, dynamic>{
-      'id': instance.id,
-      'caption': instance.caption,
-      'type': instance.type,
-      'subscriptions': instance.subscriptions,
-    };
+Map<String, dynamic> _$DeviceToJson(Device instance) {
+  final val = <String, dynamic>{};
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('id', instance.id);
+  val['caption'] = instance.caption;
+  val['type'] = instance.type;
+  val['subscriptions'] = instance.subscriptions;
+  return val;
+}

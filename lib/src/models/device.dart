@@ -4,7 +4,9 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'device.g.dart';
 
-@JsonSerializable(nullable: false)
+final typeRegex = RegExp("desktop|laptop|mobile|server|other");
+
+@JsonSerializable(nullable: true)
 class Device {
   @JsonKey(disallowNullValue: true)
   final String id;
@@ -15,7 +17,8 @@ class Device {
 
   final int subscriptions;
 
-  Device({this.id, this.caption, this.type, this.subscriptions});
+  Device({this.id, this.caption, this.type, this.subscriptions})
+      : assert(type.contains(typeRegex));
 
   factory Device.fromJson(Map<String, dynamic> json) => _$DeviceFromJson(json);
 

@@ -1,9 +1,11 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:gpodder_api/gpodder_api.dart';
 import 'package:gpodder_api/src/models/device.dart';
+import 'package:gpodder_api/src/models/device_updates.dart';
 import 'package:gpodder_api/src/models/gpodder_user.dart';
 import 'package:gpodder_api/src/models/subscription.dart';
 import 'package:gpodder_api/src/models/tag.dart';
@@ -17,7 +19,7 @@ void main() {
     expect(() => calculator.addOne(null), throwsNoSuchMethodError);*/
   });
 
-  group('Service Tests', () {
+  group('Unathenticated Service Tests', () {
     //initialize the service
 
     test('Test reading the configuration api', () async {
@@ -48,29 +50,55 @@ void main() {
       expect(search.length, isNotNull);
       expect(search[0].url, isNotNull);
     });
+  });
 
+  group('Authenticated tests', () {
+    /*
+    // These require both credentials.json and device.json in /fixtures
+    // They should match the format of the models to be used by fromJson factory
+    // contstructors
+    */
     test('subscription service testing', () async {
       final configService = ClientConfigService();
       await configService.configIsFetched;
 
-      GpodderUser user = GpodderUser(userId: "harriseldon", password: "");
-      Device device =
-          Device(id: "kilgore", caption: "Laptop", type: "computer");
+      expect(configService, isNotNull);
+      expect(configService.config, isNotNull);
+
+      final GpodderUser user =
+          GpodderUser.fromJson(jsonDecode(fixture("credentials.json")));
+
+      expect(user, isNotNull);
+      expect(user.password, isNotNull);
+
+      Device device = Device.fromJson(jsonDecode(fixture("device.json")));
+
       final SubscriptionService subscriptionService =
           SubscriptionService(config: configService.config, user: user);
 
-      final List<Subscription> deviceSubscriptions =
+      final List<String> deviceSubscriptions =
           await subscriptionService.getDeviceSubscriptions(device);
 
       expect(deviceSubscriptions.length, isNotNull);
+
+      final List<Subscription> allSubscriptions =
+          await subscriptionService.getAllSubscriptions();
+
+      expect(allSubscriptions.length, isNotNull);
+      expect(allSubscriptions[0].url, isNotNull);
+
+      final List<String> updates =
+          await subscriptionService.getSubscriptionChanges(device, 0);
+
+      expect(updates, isNotNull);
     });
   });
+}
 
-  String fixture(String name) {
-    var dir = Directory.current.path;
-    if (dir.endsWith('/test')) {
-      dir = dir.replaceAll('/test', '');
-    }
-    return File('$dir/test/fixtures/$name').readAsStringSync();
+String fixture(String name) {
+  var dir = Directory.current.path;
+  if (dir.endsWith('/test')) {
+    dir = dir.replaceAll('/test', '');
   }
+  return File('$dir/test/fixtures/$name').readAsStringSync();
 }
